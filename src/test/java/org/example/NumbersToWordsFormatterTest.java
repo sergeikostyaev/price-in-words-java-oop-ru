@@ -1,13 +1,41 @@
 package org.example;
 
-//import org.junit.Test;
+import org.example.fakes.BigDecimalReaderSpy;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.math.BigDecimal;
+import java.util.stream.Stream;
 
 
 public class NumbersToWordsFormatterTest {
+    private static Stream<Arguments> provideIrrelevantArguments() {
+        return Stream.of(
+                Arguments.of(BigDecimal.valueOf(1.111), "Wrong format"),
+                Arguments.of(BigDecimal.valueOf(1.1112), "Wrong format"),
+                Arguments.of(BigDecimal.valueOf(1.1311), "Wrong format"),
+                Arguments.of(BigDecimal.valueOf(1.2111), "Wrong format"),
+                Arguments.of(BigDecimal.valueOf(1.1166661), "Wrong format"),
+                Arguments.of(BigDecimal.valueOf(1.11999991), "Wrong format")
+        );
+    }
 
-//    @Test
-//    public void convertNumberToSentenceLowValuesTest() {
-//
-//
-//    }
+    @ParameterizedTest
+    @MethodSource("provideIrrelevantArguments")
+    public void irrelevantFormatTestParametrized(BigDecimal input, String errorString) {
+        InputService inputService = new BigDecimalReaderSpy(input);
+        Currency currency = new Currency("рубль", "рубля", "рублей","копейка", "копеек", "копейки", false, true);
+        String thrownString = null;
+        PriceToWordsFormatter priceToWordsFormatter = new PriceToWordsFormatter(inputService,currency);
+        try{
+            priceToWordsFormatter.makePriceToWordsFormat();
+        }catch (Exception e){
+            thrownString = e.getMessage();
+        }
+
+        Assertions.assertEquals(errorString, thrownString);
+
+    }
 }
