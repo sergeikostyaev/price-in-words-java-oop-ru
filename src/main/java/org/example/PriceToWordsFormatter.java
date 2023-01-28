@@ -5,45 +5,43 @@ import java.util.ArrayList;
 import static org.example.NumbersToWordsFormatter.convertNumberToSentence;
 
 public class PriceToWordsFormatter {
-    private final InputService reader;
+
     private final Currency currency;
 
-    public PriceToWordsFormatter(InputService reader, Currency currency) {
-        this.reader = reader;
+    public PriceToWordsFormatter(Currency currency) {
         this.currency = currency;
     }
-
-    public ArrayList<String> makePriceToWordsFormat(){
-        BigDecimal bigDecimal = reader.read();
+    public ArrayList<String> makePriceToWordsFormat(BigDecimal bigDecimal){
         ArrayList<String> result = convertNumberToSentence(getIntegerValue(bigDecimal));
 
         switch (result.get(result.size()-1)){
             case "один" -> {
                 if(currency.isRubelFem()) result.set(result.size() - 1, "одна");
-                result.add(currency.getRubel());
+//                result.add(currency.getRubel());
             }
             case "два" -> {
                 if(currency.isRubelFem()) result.set(result.size() - 1, "две");
-                result.add(currency.getRublya());
+//                result.add(currency.getRublya());
             }
-            case "три", "четыре" -> result.add(currency.getRublya());
-            default -> result.add(currency.getRubley());
+//            case "три", "четыре" -> result.add(currency.getRublya());
+//            default -> result.add(currency.getRubley());
         }
-
+        result.add(currency.getCurrencyEnding(result.get(result.size()-1)));
         result.addAll(convertNumberToSentence(makeFactorialFormat(getFactorialValue(bigDecimal))));
 
         switch (result.get(result.size()-1)){
             case "один" -> {
                 if(currency.isKopeykaFem()) result.set(result.size() - 1, "одна");
-                result.add(currency.getKopeyka());
+//                result.add(currency.getKopeyka());
             }
             case "два" -> {
                 if(currency.isKopeykaFem()) result.set(result.size() - 1, "две");
-                result.add(currency.getKopeyki());
+//                result.add(currency.getKopeyki());
             }
-            case "три", "четыре" -> result.add(currency.getKopeyki());
-            default -> result.add(currency.getKopeek());
+//            case "три", "четыре" -> result.add(currency.getKopeyki());
+//            default -> result.add(currency.getKopeek());
         }
+        result.add(currency.getSubCurrencyEnding(result.get(result.size()-1)));
         return result;
     }
 

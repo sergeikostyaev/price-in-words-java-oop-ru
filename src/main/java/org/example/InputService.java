@@ -1,7 +1,5 @@
 package org.example;
 
-import java.math.BigDecimal;
-
-public interface InputService {
-    BigDecimal read();
+public interface InputService<T, U> {
+    T read(U validators);
 }

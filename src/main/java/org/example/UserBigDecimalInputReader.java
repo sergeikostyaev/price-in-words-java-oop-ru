@@ -1,25 +1,33 @@
 package org.example;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class UserBigDecimalInputReader implements InputService {
+public class UserBigDecimalInputReader implements InputService<BigDecimal, ArrayList<Validator<BigDecimal>>> {
 
     @Override
-    public BigDecimal read() {
+    public BigDecimal read(ArrayList<Validator<BigDecimal>> validators) {
         Scanner sc = new Scanner(System.in).useLocale(Locale.US);
-        BigDecimal res = BigDecimal.valueOf(0);
         do {
-            BigDecimal temp = BigDecimal.valueOf(sc.nextDouble());
-            if (temp.compareTo(BigDecimal.valueOf(0)) >= 0 && temp.compareTo(BigDecimal.valueOf(100_000_000_000_00.0)) < 0) {
-                res = temp;
-                break;
-            } else {
-                System.out.println("Введите число от 1 до 9999999999999");
+            String string = sc.nextLine();
+            BigDecimal temp = BigDecimal.valueOf(Double.parseDouble(string));
+            boolean isSuccessful = true;
+            for(Validator<BigDecimal> v: validators){
+                if(!v.validate(temp)){
+                    System.err.println(v.errorMessage());
+                    isSuccessful = false;
+                    break;
+                }
+            }
+            if(isSuccessful) {
+                return temp;
             }
         } while (true);
-
-        return res;
     }
+
+
+
 }
+
